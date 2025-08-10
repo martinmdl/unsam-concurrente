@@ -4,10 +4,10 @@ from time import sleep
 gano = False
 lock = Lock()
 
-def caballo(num):
+def caballo(num, vueltas):
     global gano
-    for i in range(1, 4):
-        print(f"Corre {num}")
+    for i in range(1, vueltas + 1):
+        print(f"Caballo {num} - vuelta {i}")
         sleep(2)
         with lock:
             if gano:
@@ -18,16 +18,23 @@ def caballo(num):
             gano = True
             print(f"El caballo {num} llegó a la meta")
 
-threads = []
+def main():
+    threads = []
 
-for i in range(1, 11):
-    thread = Thread(target=caballo, args=(i,))
-    threads.append(thread)
-    
-for thread in threads:
-    thread.start()
+    cantCaballos = int(input("Ingrese la cantidad de caballos: "))
+    cantVueltas = int(input("Ingrese la cantidad de vueltas: "))
 
-for thread in threads:
-    thread.join()
+    for i in range(1, cantCaballos + 1):
+        thread = Thread(target=caballo, args=(i, cantVueltas))
+        threads.append(thread)
+        
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+if __name__ == "__main__":
+    main()
 
 
