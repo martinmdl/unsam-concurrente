@@ -1,4 +1,7 @@
-for i in range(1, 6):
-    print(f"Prueba {i} está corriendo")
+choosing = [False] * 3
+number = [0] * 3
 
-print(globals()[f'caballo{i}'])
+number[0] = 5
+number[1] = 1 + max(number)
+
+print(number)
