@@ -7,7 +7,6 @@ import time
 turno = 1
 tInicial = time.time()
 
-
 def rutinaBañoPadre():
 
     global turno

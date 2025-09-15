@@ -1,38 +1,37 @@
-import threading
-import time
 import random
+import threading
 
-number = [0, 0]
-choosing = [False, False]
+def sort1(list):
+    list.sort() # async
+    s1.release()
 
-def proceso(id, other):
-    for _ in range(3):  # cada proceso entra 3 veces a la sección crítica
-        
-        # Paso 1: Sort (elegir número)
-        choosing[id] = True
-        number[id] = 1 + number[other]   # para 2 procesos basta mirar al otro
-        choosing[id] = False
+def sort2(list):
+    list.sort() # async
+    s2.release()
 
-        # Paso 2: Merge (esperar turno si el otro tiene prioridad)
-        while choosing[other]:
-            pass  # espero a que termine de elegir
+def merge(listA, listB):
+    s1.acquire()
+    s2.acquire()
+    newList = listA + listB # critical section
+    newList.sort()
+    print(newList)
+    return newList
 
-        while number[other] != 0 and (number[other], other) < (number[id], id):
-            pass  # espero si el otro tiene prioridad
+listaDesordenada = [random.randint(0, 1000) for _ in range(100)] # 100 enteros entre 0 y 1000
 
-        # --- Sección crítica ---
-        print(f"Proceso {id} entra a la sección crítica")
-        time.sleep(random.uniform(0.5, 1.5))  # simula trabajo
-        print(f"Proceso {id} sale de la sección crítica")
+s1 = threading.Semaphore(0)
+s2 = threading.Semaphore(0)
 
-        number[id] = 0
+centro = len(listaDesordenada) // 2
 
-# Crear dos hilos
-t0 = threading.Thread(target=proceso, args=(0, 1))
-t1 = threading.Thread(target=proceso, args=(1, 0))
+half1 = listaDesordenada[:centro]
+half2 = listaDesordenada[centro:]
 
-t0.start()
-t1.start()
+threads = [
+    threading.Thread(target=sort1, args=(half1,)),
+    threading.Thread(target=sort2, args=(half2,)),
+    threading.Thread(target=merge, args=(half1, half2))
+]
 
-t0.join()
-t1.join()
+for t in threads: t.start()
+for t in threads: t.join()

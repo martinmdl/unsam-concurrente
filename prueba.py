@@ -1,7 +1,7 @@
-choosing = [False] * 3
-number = [0] * 3
+import random
 
-number[0] = 5
-number[1] = 1 + max(number)
 
-print(number)
+listaA = [1,2]
+listaB = [6,7]
+
+print(listaA + listaB)

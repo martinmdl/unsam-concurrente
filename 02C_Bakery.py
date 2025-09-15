@@ -32,7 +32,7 @@ def bakery(id: int):
     
         number[id] = 0
 
-# Crear hilos
+
 threads = [threading.Thread(target=bakery, args=(i,)) for i in range(N)]
 
 for t in threads:
